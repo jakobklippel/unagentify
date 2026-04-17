@@ -1,0 +1,5 @@
+title: 'Support Evaluator'
+
+description: |
+  Evaluates customer support agent responses against expected outcomes.
+  Produces per-ticket scores and aggregate KPIs.

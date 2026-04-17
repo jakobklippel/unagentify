@@ -22,7 +22,9 @@ import {
   SubscriptionLookupTool,
 } from './demo/tools';
 import { CustomerSupportAgentWorkflow } from './demo/workflows/customer-support-agent/customer-support-agent.workflow';
+import { ImprovementAdvisorWorkflow } from './demo/workflows/improvement-advisor/improvement-advisor.workflow';
 import { SupportBatchRunnerWorkflow } from './demo/workflows/support-batch-runner/support-batch-runner.workflow';
+import { SupportEvaluatorWorkflow } from './demo/workflows/support-evaluator/support-evaluator.workflow';
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { SupportBatchRunnerWorkflow } from './demo/workflows/support-batch-runne
     KnownIssuesLookupTool,
     CustomerSupportAgentWorkflow,
     SupportBatchRunnerWorkflow,
+    SupportEvaluatorWorkflow,
+    ImprovementAdvisorWorkflow,
   ],
 })
 export class DefaultModule {}

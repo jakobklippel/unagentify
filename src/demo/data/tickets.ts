@@ -48,32 +48,32 @@ export const testTickets: TestTicket[] = [
     },
   },
 
-  // {
-  //   id: 'A2',
-  //   category: 'A',
-  //   title: 'Two collars but only one subscription visible',
-  //   name: 'James Chen',
-  //   email: 'james.chen@email.com',
-  //   message: `I have two Collar Pros — one for my Golden Retriever Max and one for my Beagle Penny. But when I look at my account, I only see one subscription. Am I being charged for both? I want to make sure I'm not missing anything or getting double charged without knowing.`,
-  //   expected: {
-  //     requiredFacts: [
-  //       'Customer has two active subscriptions: SUB-3002 and SUB-3003',
-  //       'SUB-3002 bills on the 1st, SUB-3003 bills on the 15th',
-  //       'Both are $9.99/month each ($19.98 total)',
-  //       'The dashboard only showing one is a known UI issue (ISSUE-005)',
-  //       'Both subscriptions are billing correctly',
-  //     ],
-  //     expectedResolution:
-  //       'Confirm both subscriptions exist and are billing correctly at $9.99 each. Explain the dashboard limitation is a known issue being investigated. Provide both subscription IDs for reference.',
-  //     expectedTools: ['customerLookup', 'subscriptionLookup', 'knownIssuesLookup', 'orderLookup'],
-  //     pitfalls: [
-  //       'Only finding one subscription and confirming the customer is only being charged once',
-  //       'Not checking known issues to explain why only one is visible',
-  //       'Creating a duplicate subscription instead of finding the existing second one',
-  //     ],
-  //   },
-  // },
-  //
+  {
+    id: 'A2',
+    category: 'A',
+    title: 'Two collars but only one subscription visible',
+    name: 'James Chen',
+    email: 'james.chen@email.com',
+    message: `I have two Collar Pros — one for my Golden Retriever Max and one for my Beagle Penny. But when I look at my account, I only see one subscription. Am I being charged for both? I want to make sure I'm not missing anything or getting double charged without knowing.`,
+    expected: {
+      requiredFacts: [
+        'Customer has two active subscriptions: SUB-3002 and SUB-3003',
+        'SUB-3002 bills on the 1st, SUB-3003 bills on the 15th',
+        'Both are $9.99/month each ($19.98 total)',
+        'The dashboard only showing one is a known UI issue (ISSUE-005)',
+        'Both subscriptions are billing correctly',
+      ],
+      expectedResolution:
+        'Confirm both subscriptions exist and are billing correctly at $9.99 each. Explain the dashboard limitation is a known issue being investigated. Provide both subscription IDs for reference.',
+      expectedTools: ['customerLookup', 'subscriptionLookup', 'knownIssuesLookup', 'orderLookup'],
+      pitfalls: [
+        'Only finding one subscription and confirming the customer is only being charged once',
+        'Not checking known issues to explain why only one is visible',
+        'Creating a duplicate subscription instead of finding the existing second one',
+      ],
+    },
+  },
+
   // {
   //   id: 'A3',
   //   category: 'A',

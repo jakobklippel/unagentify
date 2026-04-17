@@ -135,15 +135,16 @@ export class CustomerSupportAgentWorkflow extends BaseWorkflow {
 
   @Final({ from: 'extracting_response' })
   async composeResponse() {
+    const agentText = this.extractTextResponse(this.llmResult!);
+
     const result = await this.claudeGenerateObject.call({
       system:
-        'Extract the final customer-facing response from the conversation. ' +
+        'Extract the final customer-facing response from the agent output below. ' +
         'Return only the message that should be sent to the customer — no internal notes, reasoning, or tool call references.',
+      prompt: agentText,
       claude: {
         model: 'claude-sonnet-4-6',
-        cache: true,
       },
-      messagesSearchTag: 'message',
       response: {
         document: SupportResponseDocument,
       },
@@ -178,5 +179,13 @@ export class CustomerSupportAgentWorkflow extends BaseWorkflow {
 
   private allToolsComplete(): boolean {
     return !!this.delegateResult?.allCompleted;
+  }
+
+  private extractTextResponse(result: ClaudeGenerateTextResult): string {
+    if (!result.content) return '';
+    return result.content
+      .filter((block: any) => block.type === 'text')
+      .map((block: any) => block.text as string)
+      .join('\n\n');
   }
 }
