@@ -7,7 +7,6 @@ import {
   Initial,
   InjectWorkflow,
   LinkDocument,
-  MarkdownDocument,
   QueueResult,
   Transition,
   Workflow,
@@ -172,12 +171,6 @@ export class SupportBatchRunnerWorkflow extends BaseWorkflow {
       },
       { id: 'evaluator_link' },
     );
-
-    await this.repository.save(
-      MarkdownDocument,
-      { markdown: this.buildEvaluationMarkdown(this.evaluation) },
-      { id: 'evaluation_report' },
-    );
   }
 
   // ── Phase 3: Improvement Advisor ──
@@ -339,36 +332,5 @@ export class SupportBatchRunnerWorkflow extends BaseWorkflow {
       },
       { id: `ticket_link_${ticket.id}` },
     );
-  }
-
-  private buildEvaluationMarkdown(data: EvaluationResult): string {
-    const lines: string[] = [
-      '# Evaluation Report',
-      '',
-      '## KPIs',
-      '',
-      '| Metric | Score |',
-      '|--------|-------|',
-      `| Factual Accuracy | ${data.kpis.avgFactualAccuracy}% |`,
-      `| Correct Resolution Rate | ${data.kpis.correctResolutionRate}% |`,
-      `| Pitfall Avoidance Rate | ${data.kpis.pitfallAvoidanceRate}% |`,
-      `| **Overall Score** | **${data.kpis.overallScore}%** |`,
-      '',
-      '## Per-Ticket Results',
-      '',
-      '| Ticket | Accuracy | Resolution | Pitfalls | Notes |',
-      '|--------|----------|------------|----------|-------|',
-    ];
-
-    for (const te of data.ticketEvaluations) {
-      const pitfalls = te.noPitfalls ? 'Clean' : te.pitfallsHit.join(', ');
-      lines.push(
-        `| ${te.ticketId} | ${te.factualAccuracy}% | ${te.correctResolution ? 'Correct' : 'Wrong'} | ${pitfalls} | ${te.notes} |`,
-      );
-    }
-
-    lines.push('', '## Summary', '', data.summary);
-
-    return lines.join('\n');
   }
 }

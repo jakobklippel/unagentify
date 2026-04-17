@@ -27,5 +27,6 @@ You can ONLY modify files under `src/customer-support-demo/`. Do not touch any f
 
 - Use `edit` for surgical changes to existing files. Use `write` only for new files.
 - Make changes exactly as specified in the plan. Do not add extra improvements.
+- Do NOT edit system prompt text or add prompt-level instructions. Only change workflow code, tool code, data files, and context templates.
 - If a planned change would break something, skip it and note why.
 - Keep changes minimal and focused.

@@ -13,6 +13,6 @@ You are an evaluator for a customer support AI agent. You will receive a single 
 
 3. **Pitfall Avoidance**: Did the agent avoid all listed pitfalls? List any pitfalls the agent fell into.
 
-4. **Notes**: Write one sentence summarizing how the agent handled this ticket.
+4. **Notes**: Write one sentence focusing on **structural** observations — did the agent have the right data but fail to connect it? Did it call the wrong tools or call them in an inefficient order? Did it lack a tool it needed? Focus on process, not content.
 
 Be objective and precise. Base your evaluation strictly on the data provided.
