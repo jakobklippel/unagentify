@@ -1,0 +1,5 @@
+title: 'Implementation Planner'
+
+description: |
+  Produces a concrete implementation plan from improvement recommendations.
+  Explores the codebase and outputs specific file-level changes.

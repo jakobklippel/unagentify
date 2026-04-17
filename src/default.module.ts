@@ -9,9 +9,8 @@ import { HitlModule } from '@loopstack/hitl';
 import { OAuthModule } from '@loopstack/oauth-module';
 import { RemoteClientModule } from '@loopstack/remote-client';
 import { SecretsModule } from '@loopstack/secrets-module';
-import { DefaultWorkspace } from './default.workspace';
-// Demo — Customer Support
-import { MockDbService } from './demo/mock-db.service';
+// Customer Support Demo
+import { MockDbService } from './customer-support-demo/mock-db.service';
 import {
   CustomerLookupTool,
   DeviceStatusTool,
@@ -20,8 +19,11 @@ import {
   OrderLookupTool,
   ProductLookupTool,
   SubscriptionLookupTool,
-} from './demo/tools';
-import { CustomerSupportAgentWorkflow } from './demo/workflows/customer-support-agent/customer-support-agent.workflow';
+} from './customer-support-demo/tools';
+import { CustomerSupportAgentWorkflow } from './customer-support-demo/workflows/customer-support-agent/customer-support-agent.workflow';
+import { DefaultWorkspace } from './default.workspace';
+import { DemoImplementationAgentWorkflow } from './demo/workflows/implementation-agent/implementation-agent.workflow';
+import { ImplementationPlannerWorkflow } from './demo/workflows/implementation-planner/implementation-planner.workflow';
 import { ImprovementAdvisorWorkflow } from './demo/workflows/improvement-advisor/improvement-advisor.workflow';
 import { SupportBatchRunnerWorkflow } from './demo/workflows/support-batch-runner/support-batch-runner.workflow';
 import { SupportEvaluatorWorkflow } from './demo/workflows/support-evaluator/support-evaluator.workflow';
@@ -41,7 +43,7 @@ import { SupportEvaluatorWorkflow } from './demo/workflows/support-evaluator/sup
   ],
   providers: [
     DefaultWorkspace,
-    // Demo — Customer Support
+    // Customer Support Demo
     MockDbService,
     CustomerLookupTool,
     OrderLookupTool,
@@ -54,6 +56,8 @@ import { SupportEvaluatorWorkflow } from './demo/workflows/support-evaluator/sup
     SupportBatchRunnerWorkflow,
     SupportEvaluatorWorkflow,
     ImprovementAdvisorWorkflow,
+    ImplementationPlannerWorkflow,
+    DemoImplementationAgentWorkflow,
   ],
 })
 export class DefaultModule {}

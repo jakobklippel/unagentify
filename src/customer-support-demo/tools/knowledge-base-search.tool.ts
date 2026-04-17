@@ -44,7 +44,9 @@ export class KnowledgeBaseSearchTool extends BaseTool {
       return { data: article ?? { error: `No article found with id "${where.id}"` } };
     }
 
-    let results = where.query ? this.db.searchKnowledgeBase(where.query) : this.db.getKnowledgeBaseByCategory(where.category!);
+    let results = where.query
+      ? this.db.searchKnowledgeBase(where.query)
+      : this.db.getKnowledgeBaseByCategory(where.category!);
 
     if (where.query && where.category) {
       results = results.filter((a) => a.category === where.category);

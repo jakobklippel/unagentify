@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectWorkflow, Workspace, WorkspaceInterface } from '@loopstack/common';
+import { ConnectGitHubWorkflow } from '@loopstack/github-integration';
 import { SupportBatchRunnerWorkflow } from './demo/workflows/support-batch-runner/support-batch-runner.workflow';
 
 @Injectable()
@@ -31,4 +32,5 @@ import { SupportBatchRunnerWorkflow } from './demo/workflows/support-batch-runne
 })
 export class DefaultWorkspace implements WorkspaceInterface {
   @InjectWorkflow() supportBatchRunner: SupportBatchRunnerWorkflow;
+  @InjectWorkflow() connectGitHub: ConnectGitHubWorkflow;
 }

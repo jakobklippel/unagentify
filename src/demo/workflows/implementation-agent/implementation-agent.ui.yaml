@@ -1,0 +1,4 @@
+title: 'Implementation Agent'
+
+description: |
+  Executes an implementation plan by editing code files in the sandbox.

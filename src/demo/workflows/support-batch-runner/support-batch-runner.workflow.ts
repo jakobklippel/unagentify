@@ -12,9 +12,11 @@ import {
   Transition,
   Workflow,
 } from '@loopstack/common';
-import { TestTicket, testTickets } from '../../data/tickets';
+import { TestTicket, testTickets } from '../../../customer-support-demo/data/tickets';
+import { CustomerSupportAgentWorkflow } from '../../../customer-support-demo/workflows/customer-support-agent/customer-support-agent.workflow';
 import { EvaluationResult } from '../../documents/evaluation-document';
-import { CustomerSupportAgentWorkflow } from '../customer-support-agent/customer-support-agent.workflow';
+import { DemoImplementationAgentWorkflow } from '../implementation-agent/implementation-agent.workflow';
+import { ImplementationPlannerWorkflow } from '../implementation-planner/implementation-planner.workflow';
 import { ImprovementAdvisorWorkflow } from '../improvement-advisor/improvement-advisor.workflow';
 import { SupportEvaluatorWorkflow } from '../support-evaluator/support-evaluator.workflow';
 
@@ -33,6 +35,16 @@ const AdvisorCallbackSchema = CallbackSchema.extend({
 });
 type AdvisorCallback = z.infer<typeof AdvisorCallbackSchema>;
 
+const PlannerCallbackSchema = CallbackSchema.extend({
+  data: z.object({ plan: z.string() }),
+});
+type PlannerCallback = z.infer<typeof PlannerCallbackSchema>;
+
+const ImplementationCallbackSchema = CallbackSchema.extend({
+  data: z.object({ summary: z.string() }),
+});
+type ImplementationCallback = z.infer<typeof ImplementationCallbackSchema>;
+
 interface TicketResult {
   ticketId: string;
   name: string;
@@ -48,11 +60,15 @@ export class SupportBatchRunnerWorkflow extends BaseWorkflow {
   @InjectWorkflow() customerSupportAgent: CustomerSupportAgentWorkflow;
   @InjectWorkflow() supportEvaluator: SupportEvaluatorWorkflow;
   @InjectWorkflow() improvementAdvisor: ImprovementAdvisorWorkflow;
+  @InjectWorkflow() implementationPlanner: ImplementationPlannerWorkflow;
+  @InjectWorkflow() demoImplementationAgent: DemoImplementationAgentWorkflow;
 
   tickets: TestTicket[] = [];
   currentIndex: number = 0;
   results: TicketResult[] = [];
   evaluation?: EvaluationResult;
+  improvementConcept?: string;
+  implementationPlan?: string;
 
   // ── Phase 1: Run all tickets ──
 
@@ -157,10 +173,11 @@ export class SupportBatchRunnerWorkflow extends BaseWorkflow {
       { id: 'evaluator_link' },
     );
 
-    // Display evaluation summary in the main workflow
-    await this.repository.save(MarkdownDocument, {
-      markdown: this.buildEvaluationMarkdown(this.evaluation),
-    });
+    await this.repository.save(
+      MarkdownDocument,
+      { markdown: this.buildEvaluationMarkdown(this.evaluation) },
+      { id: 'evaluation_report' },
+    );
   }
 
   // ── Phase 3: Improvement Advisor ──
@@ -184,12 +201,15 @@ export class SupportBatchRunnerWorkflow extends BaseWorkflow {
     );
   }
 
-  @Final({
+  @Transition({
     from: 'advising',
+    to: 'advisor_complete',
     wait: true,
     schema: AdvisorCallbackSchema,
   })
   async advisorCallback(payload: AdvisorCallback) {
+    this.improvementConcept = payload.data.concept;
+
     await this.repository.save(
       LinkDocument,
       {
@@ -200,11 +220,94 @@ export class SupportBatchRunnerWorkflow extends BaseWorkflow {
       },
       { id: 'advisor_link' },
     );
+  }
+
+  // ── Phase 4: Implementation Planner ──
+
+  @Transition({ from: 'advisor_complete', to: 'planning' })
+  async runPlanner() {
+    const result: QueueResult = await this.implementationPlanner.run(
+      { concept: this.improvementConcept! },
+      { alias: 'implementationPlanner', callback: { transition: 'plannerCallback' } },
+    );
+
+    await this.repository.save(
+      LinkDocument,
+      {
+        label: 'Creating implementation plan',
+        workflowId: result.workflowId,
+        embed: true,
+        expanded: true,
+      },
+      { id: 'planner_link' },
+    );
+  }
+
+  @Transition({
+    from: 'planning',
+    to: 'plan_complete',
+    wait: true,
+    schema: PlannerCallbackSchema,
+  })
+  async plannerCallback(payload: PlannerCallback) {
+    this.implementationPlan = payload.data.plan;
+
+    await this.repository.save(
+      LinkDocument,
+      {
+        label: 'Implementation plan ready',
+        workflowId: payload.workflowId,
+        embed: true,
+        expanded: false,
+      },
+      { id: 'planner_link' },
+    );
+  }
+
+  // ── Phase 5: Implementation Agent ──
+
+  @Transition({ from: 'plan_complete', to: 'implementing' })
+  async runImplementation() {
+    const result: QueueResult = await this.demoImplementationAgent.run(
+      { plan: this.implementationPlan! },
+      { alias: 'demoImplementationAgent', callback: { transition: 'implementationCallback' } },
+    );
+
+    await this.repository.save(
+      LinkDocument,
+      {
+        label: 'Implementing changes',
+        workflowId: result.workflowId,
+        embed: true,
+        expanded: true,
+      },
+      { id: 'implementation_link' },
+    );
+  }
+
+  @Final({
+    from: 'implementing',
+    wait: true,
+    schema: ImplementationCallbackSchema,
+  })
+  async implementationCallback(payload: ImplementationCallback) {
+    await this.repository.save(
+      LinkDocument,
+      {
+        label: 'Implementation complete',
+        workflowId: payload.workflowId,
+        embed: true,
+        expanded: false,
+      },
+      { id: 'implementation_link' },
+    );
 
     return {
       results: this.results,
       evaluation: this.evaluation,
-      improvementConcept: payload.data.concept,
+      improvementConcept: this.improvementConcept,
+      implementationPlan: this.implementationPlan,
+      implementationSummary: payload.data.summary,
     };
   }
 

@@ -5,7 +5,7 @@ You are a senior software architect reviewing a customer support AI agent implem
 ### Phase 1 — Code Exploration
 
 Use `glob`, `grep`, and `read` to understand the agent's implementation:
-1. Explore the demo directory structure (`src/demo/`)
+1. Explore the demo directory structure (`src/customer-support-demo/`)
 2. Read the customer support agent workflow to understand the agent loop
 3. Read the system prompt and context template
 4. Read the mock database tools to understand what data is available
@@ -40,4 +40,4 @@ Keep recommendations practical and specific — reference actual file paths, tic
 - Do NOT modify any files. This is a read-only analysis phase.
 - Use `glob` and `grep` to find files, then `read` to examine them.
 - Be thorough in your code exploration before making recommendations.
-- Focus on changes within `src/demo/` only.
+- Focus on changes within `src/customer-support-demo/` only.
