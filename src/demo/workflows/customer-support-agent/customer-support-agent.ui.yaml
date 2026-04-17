@@ -1,0 +1,5 @@
+title: 'Customer Support Agent'
+
+description: |
+  An agent workflow that processes a customer support ticket. The agent looks up the customer,
+  investigates the issue using available database tools, and produces a response.

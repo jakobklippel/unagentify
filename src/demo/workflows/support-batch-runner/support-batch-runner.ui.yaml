@@ -1,0 +1,5 @@
+title: 'Support Batch Runner'
+
+description: |
+  Runs all demo customer support tickets sequentially through the customer support agent.
+  Collects responses and stores them alongside expected outcomes for later evaluation.

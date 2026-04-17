@@ -1,0 +1,12 @@
+type: document
+
+ui:
+  widgets:
+    - widget: form
+      options:
+        order:
+          - response
+        properties:
+          response:
+            title: Response
+            widget: markdown-view
